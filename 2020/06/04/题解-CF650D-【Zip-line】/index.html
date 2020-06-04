@@ -5,13 +5,17 @@
   
 
   
-  <title>Hexo</title>
+  <title>题解 CF650D 【Zip-line】 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://yoursite.com/index.html">
+  <meta name="description" content="考虑如果我修改了一个数字，那么这时候答案是两部分的最大值：  经过这个点的LIS。   不经过这个点的LIS。   我们先考虑做1。 对于经过每个点的，就是前缀比他小的和后缀比它大的加起来，再加上它。 我们再分成三部分。 对于前缀比它小的，我们从左往右扫描，同时统计相应的答案（用树状数组维护）后缀同理，再加一。当然也可以强行主席树做。 考虑2，不经过这点的LIS。 显然答案要么是原来的len，要么">
+<meta property="og:type" content="article">
+<meta property="og:title" content="题解 CF650D 【Zip-line】">
+<meta property="og:url" content="http://yoursite.com/2020/06/04/%E9%A2%98%E8%A7%A3-CF650D-%E3%80%90Zip-line%E3%80%91/index.html">
 <meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="考虑如果我修改了一个数字，那么这时候答案是两部分的最大值：  经过这个点的LIS。   不经过这个点的LIS。   我们先考虑做1。 对于经过每个点的，就是前缀比他小的和后缀比它大的加起来，再加上它。 我们再分成三部分。 对于前缀比它小的，我们从左往右扫描，同时统计相应的答案（用树状数组维护）后缀同理，再加一。当然也可以强行主席树做。 考虑2，不经过这点的LIS。 显然答案要么是原来的len，要么">
 <meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-06-04T14:04:26.000Z">
+<meta property="article:modified_time" content="2020-06-04T14:05:52.474Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
   
@@ -62,9 +66,7 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-    <article id="post-题解-CF650D-【Zip-line】" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-题解-CF650D-【Zip-line】" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2020/06/04/%E9%A2%98%E8%A7%A3-CF650D-%E3%80%90Zip-line%E3%80%91/" class="article-date">
   <time datetime="2020-06-04T14:04:26.000Z" itemprop="datePublished">2020-06-04</time>
@@ -77,8 +79,8 @@
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/06/04/%E9%A2%98%E8%A7%A3-CF650D-%E3%80%90Zip-line%E3%80%91/">题解 CF650D 【Zip-line】</a>
+    <h1 class="article-title" itemprop="name">
+      题解 CF650D 【Zip-line】
     </h1>
   
 
@@ -116,11 +118,9 @@
     </footer>
   </div>
   
-</article>
-
-
+    
   
-
+</article>
 
 </section>
         
