@@ -64,12 +64,175 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-题解-P3312-【-SDOI2014-数表】" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/06/05/%E9%A2%98%E8%A7%A3-P3312-%E3%80%90-SDOI2014-%E6%95%B0%E8%A1%A8%E3%80%91/" class="article-date">
+  <time datetime="2020-06-05T11:01:00.000Z" itemprop="datePublished">2020-06-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E9%A2%98%E8%A7%A3/">题解</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/06/05/%E9%A2%98%E8%A7%A3-P3312-%E3%80%90-SDOI2014-%E6%95%B0%E8%A1%A8%E3%80%91/">题解 P3312 【[SDOI2014]数表】</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="一道数论-数据结构的DuLiu题"><a href="#一道数论-数据结构的DuLiu题" class="headerlink" title="一道数论+数据结构的DuLiu题"></a>一道数论+数据结构的DuLiu题</h1><p>我们要求的就是</p>
+<script type="math/tex; mode=display">Ans=\sum_{i=1}^n\sum_{j=1}^m\sum_{d|i\wedge d|j}d[\sum_{d|i\wedge d|j}d\leq a]</script><p>考虑到$d|i \wedge d|j$等价于$ d|gcd(i,j)$</p>
+<script type="math/tex; mode=display">Ans=\sum_{i=1}^n\sum_{j=1}^m\sum_{d|gcd(i,j)}d[\sum_{d|gcd(i,j)}d\leq a]</script><p>令$f(x)=\sum_{i|x}i$,即因子和,<br>把$f(x)$带入</p>
+<script type="math/tex; mode=display">Ans=\sum_{i=1}^n\sum_{j=1}^m f(gcd(i,j))[f(gcd(i,j))\leq a]</script><script type="math/tex; mode=display">枚举因数</script><script type="math/tex; mode=display">Ans=\sum_{d=1}^n \sum_{i=1}^{\lfloor\frac n d\rfloor}\sum_{j=1}^{\lfloor\frac m d\rfloor} f(d)[f(d)\leq a][gcd(i,j)==1]</script><p>把$f(d)[f(d)\leq a]$提前并使用莫比乌斯反演</p>
+<script type="math/tex; mode=display">Ans=\sum_{d=1}^n f(d)[f(d)\leq a]\sum_{i=1}^{\lfloor\frac n d\rfloor}\sum_{j=1}^{\lfloor\frac m d\rfloor} \sum_{x|gcd(i,j)} \mu(x)</script><script type="math/tex; mode=display">把枚举x提前</script><script type="math/tex; mode=display">Ans=\sum_{d=1}^n f(d)[f(d)\leq a]\sum_{x=1}^{\lfloor \frac n d \rfloor} \mu(x)\sum_{i=1}^{\lfloor\frac n d\rfloor}[x|i]\sum_{j=1}^{\lfloor\frac m d\rfloor}[x|j]</script><script type="math/tex; mode=display">稍稍化简</script><script type="math/tex; mode=display">Ans=\sum_{d=1}^n f(d)[f(d)\leq a]\sum_{x=1}^{\lfloor \frac n d \rfloor} \mu(x)\lfloor \frac n {dx}\rfloor \lfloor \frac m {dx}\rfloor</script><script type="math/tex; mode=display">令dx=T</script><script type="math/tex; mode=display">Ans=\sum_{T=1}^n\sum_{d|T} f(d)[f(d)\leq a]\mu(\frac T d)\lfloor \frac n T\rfloor \lfloor \frac m T\rfloor</script><p>我们发现，只有$f(d)\leq a$的$d$,才能对$ans$有贡献<br>辣么如果从$a\to a’$,$A=\{x,a&lt;f(x)\leq a’\}$,会对$A$中所有元素及其倍数造成贡献<br>因此我们可以用某种数据结构来维护$\sum_{d|T} f(d)[f(d)\leq a]\mu(\frac T d)$,很明显BIT是一种很好的选择<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">const int maxn&#x3D;1e5+10;</span><br><span class="line">template &lt;class T&gt;inline void read(T &amp;x)&#123;</span><br><span class="line">	x&#x3D;0;char c&#x3D;getchar();</span><br><span class="line">	for(;!isdigit(c);c&#x3D;getchar());</span><br><span class="line">	for(;isdigit(c);c&#x3D;getchar())x&#x3D;x*10+c-&#39;0&#39;;</span><br><span class="line">	return;</span><br><span class="line">&#125;</span><br><span class="line">template &lt;class T&gt;void write(T x)&#123;</span><br><span class="line">	if(x&lt;0)putchar(&#39;-&#39;),x&#x3D;-x;</span><br><span class="line">	if(x&gt;&#x3D;10)write(x&#x2F;10);</span><br><span class="line">	putchar(x%10+&#39;0&#39;);</span><br><span class="line">&#125;</span><br><span class="line">bool isprime[maxn];</span><br><span class="line">int miu[maxn],prime[maxn],tot;</span><br><span class="line">int sigma[maxn];&#x2F;&#x2F;因数和 </span><br><span class="line">void init()&#123;</span><br><span class="line">	memset(isprime,0xff,sizeof isprime);</span><br><span class="line">	tot&#x3D;0;miu[1]&#x3D;1;</span><br><span class="line">	for(int i&#x3D;2;i&lt;maxn;i++)&#123;</span><br><span class="line">		if(isprime[i])</span><br><span class="line">			prime[++tot]&#x3D;i,miu[i]&#x3D;-1;</span><br><span class="line">		for(int j&#x3D;1;j&lt;&#x3D;tot&amp;&amp;i*prime[j]&lt;maxn;j++)&#123;</span><br><span class="line">			isprime[i*prime[j]]&#x3D;false;</span><br><span class="line">			if(i%prime[j])</span><br><span class="line">				miu[i*prime[j]]&#x3D;-miu[i];</span><br><span class="line">			else&#123;</span><br><span class="line">				miu[i*prime[j]]&#x3D;0;</span><br><span class="line">				break;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	for(int i&#x3D;1;i&lt;maxn;i++)</span><br><span class="line">		for(int j&#x3D;1;i*j&lt;maxn;j++)</span><br><span class="line">			sigma[i*j]+&#x3D;i;</span><br><span class="line">&#125;</span><br><span class="line">struct BIT&#123;</span><br><span class="line">	#define lowbit(x) x&amp;(-x)</span><br><span class="line">	signed tree[maxn];</span><br><span class="line">	void add(int x,int val)&#123;</span><br><span class="line">		&#x2F;&#x2F;printf(&quot;A %d %d\n&quot;,x,val);</span><br><span class="line">		while(x&lt;maxn)&#123;</span><br><span class="line">			tree[x]+&#x3D;val;</span><br><span class="line">			x+&#x3D;lowbit(x);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	signed query(int x)&#123;</span><br><span class="line">		&#x2F;&#x2F;printf(&quot;Q %d\n&quot;,x);</span><br><span class="line">		signed ret&#x3D;0;</span><br><span class="line">		while(x)&#123;</span><br><span class="line">			ret+&#x3D;tree[x];</span><br><span class="line">			x-&#x3D;lowbit(x);</span><br><span class="line">		&#125;</span><br><span class="line">		return ret;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;A;</span><br><span class="line">struct Num&#123;</span><br><span class="line">	int id,val;</span><br><span class="line">	bool operator&lt;(const Num b)const&#123;return val&lt;b.val;&#125;</span><br><span class="line">&#125;S[maxn];</span><br><span class="line">struct Que&#123;</span><br><span class="line">	int id,n,m,a;</span><br><span class="line">	bool operator&lt;(const Que b)const&#123;return a&lt;b.a;&#125;</span><br><span class="line">&#125;Q[maxn];</span><br><span class="line">signed ans[maxn];</span><br><span class="line">int t;</span><br><span class="line">void solve()&#123;</span><br><span class="line">	int now&#x3D;0;&#x2F;&#x2F;已经用过的S </span><br><span class="line">	for(int i&#x3D;1;i&lt;&#x3D;t;i++)&#123;</span><br><span class="line">		while(S[now+1].val&lt;&#x3D;Q[i].a&amp;&amp;now+1&lt;maxn)&#123;</span><br><span class="line">			now++;</span><br><span class="line">			for(int j&#x3D;1;j*S[now].id&lt;maxn;j++)</span><br><span class="line">				A.add(j*S[now].id,miu[j]*S[now].val);</span><br><span class="line">		&#125;</span><br><span class="line">		ans[Q[i].id]&#x3D;0;</span><br><span class="line">		int n&#x3D;max(Q[i].m,Q[i].n),m&#x3D;min(Q[i].m,Q[i].n);</span><br><span class="line">		for(int l&#x3D;1,r;l&lt;&#x3D;m;l&#x3D;r+1)&#123;</span><br><span class="line">			r&#x3D;min(m&#x2F;(m&#x2F;l),n&#x2F;(n&#x2F;l));</span><br><span class="line">			ans[Q[i].id]+&#x3D;(m&#x2F;l)*(n&#x2F;l)*(A.query(r)-A.query(l-1));</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125; </span><br><span class="line">signed main()&#123;</span><br><span class="line">	init();</span><br><span class="line">	read(t);</span><br><span class="line">	for(int i&#x3D;1;i&lt;maxn;i++)</span><br><span class="line">		S[i]&#x3D;&#123;i,sigma[i]&#125;;</span><br><span class="line">	for(int i&#x3D;1;i&lt;&#x3D;t;i++)&#123;</span><br><span class="line">		Q[i].id&#x3D;i;</span><br><span class="line">		read(Q[i].n);read(Q[i].m);read(Q[i].a);</span><br><span class="line">	&#125;</span><br><span class="line">	sort(S+1,S+maxn);sort(Q+1,Q+t+1);</span><br><span class="line">	solve();</span><br><span class="line">	for(int i&#x3D;1;i&lt;&#x3D;t;i++)</span><br><span class="line">		write((1ll*ans[i]+(1ll&lt;&lt;31))%(1ll&lt;&lt;31)),putchar(&#39;\n&#39;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/06/05/%E9%A2%98%E8%A7%A3-P3312-%E3%80%90-SDOI2014-%E6%95%B0%E8%A1%A8%E3%80%91/" data-id="ckb23pd3l0000jajx2wbadrd4" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84/" rel="tag">树状数组</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%8E%AB%E6%AF%94%E4%B9%8C%E6%96%AF%E5%8F%8D%E6%BC%94/" rel="tag">莫比乌斯反演</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-题解-P3172-【-CQOI2015-选数】" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/06/05/%E9%A2%98%E8%A7%A3-P3172-%E3%80%90-CQOI2015-%E9%80%89%E6%95%B0%E3%80%91/" class="article-date">
+  <time datetime="2020-06-05T10:43:00.000Z" itemprop="datePublished">2020-06-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E9%A2%98%E8%A7%A3/">题解</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/06/05/%E9%A2%98%E8%A7%A3-P3172-%E3%80%90-CQOI2015-%E9%80%89%E6%95%B0%E3%80%91/">题解 P3172 【[CQOI2015]选数】</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>很显然，题目让我们求的是(以下R=H<del>看得顺眼点</del>)</p>
+<script type="math/tex; mode=display">ans=\sum_{a_1=L}^R...\sum_{a_n=L}^R[gcd(a_1,...,a_n)==k]</script><script type="math/tex; mode=display">=\sum_{a_1=\lceil \frac L k \rceil}^{\lfloor \frac R k  \rfloor}...\sum_{a_n=\lceil \frac L k \rceil}^{\lfloor \frac R k  \rfloor}[gcd(a_1,...,a_n)==1]</script><p>接下来我们令$l=\lceil \frac L k \rceil$,$r=\lfloor \frac R k  \rfloor$</p>
+<script type="math/tex; mode=display">=\sum_{a_1=l}^r...\sum_{a_n=l}^r[gcd(a_1,...,a_n)==1]</script><p>把最后一项莫比乌斯反演一下</p>
+<script type="math/tex; mode=display">=\sum_{a_1=l}^r...\sum_{a_n=l}^r \sum_{d|gcd(a_1,...,a_n)}\mu(d)</script><p>把枚举d提到最前面</p>
+<script type="math/tex; mode=display">=\sum_{d=1}^r\mu(d)\sum_{a_1=l}^r[d|a_1]...\sum_{a_n=l}^r[d|a_n]</script><p>辣么很显然，$\sum_{a=l}^r[d|a]=$[l,r]里d的倍数的个数</p>
+<script type="math/tex; mode=display">=\sum_{d=1}^r\mu(d)(\lfloor \frac r x \rfloor-\lfloor\frac {l-1} x \rfloor)^n</script><p>在整除分块一波就OK了</p>
+<p><del><strong>关于线性筛，它死了</strong></del></p>
+<p>这里我们用杜教筛，先上公式：</p>
+<script type="math/tex; mode=display">g(1)S(n)=\sum_{i=1}^{n}h(i)-\sum_{d=2}^{n}g(d)\cdot S(\lfloor\frac{n}{d}\rfloor)</script><p>这里我们去$g=I,h=\mu *I=id$那么式子变成</p>
+<script type="math/tex; mode=display">\to S(n)=1-\sum_{d=2}^{n}S(\lfloor\frac{n}{d}\rfloor)</script><p>用整除分块就可以做了<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> int long long</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> maxn=<span class="number">5e6</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">bool</span> isprime[maxn];</span><br><span class="line"><span class="keyword">int</span> miu[maxn],prime[maxn],tot,Sum[maxn];</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">long</span> <span class="keyword">long</span> mod=<span class="number">1e9</span>+<span class="number">7</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">memset</span>(isprime,<span class="number">0xff</span>,<span class="keyword">sizeof</span> isprime);</span><br><span class="line">	tot=<span class="number">0</span>;miu[<span class="number">1</span>]=<span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">2</span>;i&lt;maxn;i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(isprime[i])</span><br><span class="line">			prime[++tot]=i,miu[i]=<span class="number">-1</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">1</span>;j&lt;=tot&amp;&amp;i*prime[j]&lt;maxn;j++)&#123;</span><br><span class="line">			isprime[i*prime[j]]=<span class="literal">false</span>;</span><br><span class="line">			<span class="keyword">if</span>(i%prime[j])</span><br><span class="line">				miu[i*prime[j]]=-miu[i];</span><br><span class="line">			<span class="keyword">else</span>&#123;</span><br><span class="line">				miu[i*prime[j]]=<span class="number">0</span>;</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	Sum[<span class="number">0</span>]=<span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;maxn;i++)</span><br><span class="line">		Sum[i]=(Sum[i<span class="number">-1</span>]+miu[i])%mod;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">map</span>&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt;S;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">int</span> <span class="title">calc</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(x&lt;maxn)<span class="keyword">return</span> Sum[x];</span><br><span class="line">	<span class="keyword">if</span>(S[x])<span class="keyword">return</span> S[x];</span><br><span class="line">	<span class="keyword">int</span> ans=<span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> l=<span class="number">2</span>,r;l&lt;=x;l=r+<span class="number">1</span>)&#123;</span><br><span class="line">		r=x/(x/l);</span><br><span class="line">		ans-=calc(x/l)*(r-l+<span class="number">1</span>)%mod;</span><br><span class="line">		ans%=mod;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> S[x]=ans%mod;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> <span class="title">T</span>&gt;<span class="title">inline</span> <span class="title">void</span> <span class="title">read</span>(<span class="title">T</span> &amp;<span class="title">x</span>)&#123;</span></span><br><span class="line">	x=<span class="number">0</span>;<span class="keyword">char</span> c=getchar();</span><br><span class="line">	<span class="keyword">for</span>(;!<span class="built_in">isdigit</span>(c);c=getchar());</span><br><span class="line">	<span class="keyword">for</span>(;<span class="built_in">isdigit</span>(c);c=getchar())x=x*<span class="number">10</span>+c-<span class="string">'0'</span>;</span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> <span class="title">T</span>&gt;<span class="title">void</span> <span class="title">write</span>(<span class="title">T</span> <span class="title">x</span>)&#123;</span></span><br><span class="line">	<span class="keyword">if</span>(x&lt;<span class="number">0</span>)<span class="built_in">putchar</span>(<span class="string">'-'</span>),x=-x;</span><br><span class="line">	<span class="keyword">if</span>(x&gt;=<span class="number">10</span>)write(x/<span class="number">10</span>);</span><br><span class="line">	<span class="built_in">putchar</span>(x%<span class="number">10</span>+<span class="string">'0'</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">long</span> <span class="keyword">long</span> <span class="title">qpow</span><span class="params">(<span class="keyword">long</span> <span class="keyword">long</span> a,<span class="keyword">long</span> <span class="keyword">long</span> b)</span></span>&#123;</span><br><span class="line">	<span class="keyword">long</span> <span class="keyword">long</span> ret=<span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span>(b)&#123;</span><br><span class="line">		<span class="keyword">if</span>(b&amp;<span class="number">1</span>)ret=(ret*a)%mod;</span><br><span class="line">		a=(a*a)%mod,b&gt;&gt;=<span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">(<span class="keyword">long</span> <span class="keyword">long</span> N,<span class="keyword">long</span> <span class="keyword">long</span> K,<span class="keyword">long</span> <span class="keyword">long</span> L,<span class="keyword">long</span> <span class="keyword">long</span> R)</span></span>&#123;</span><br><span class="line">	L=(L<span class="number">-1</span>)/K,R=R/K;</span><br><span class="line">	<span class="keyword">long</span> <span class="keyword">long</span> ans=<span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> l=<span class="number">1</span>,r;l&lt;=R;l=r+<span class="number">1</span>)&#123;</span><br><span class="line">		r=min(R/(R/l),(L/l)?L/(L/l):<span class="number">0x3f3f3f3f3f3f3f3f</span>);</span><br><span class="line">		ans=(ans+<span class="number">1l</span>l*(calc(r)-calc(l<span class="number">-1</span>))*qpow((R/l)-(L/l),N))%mod;</span><br><span class="line">		<span class="comment">//printf("%lld %lld %lld\n",l,r,ans);</span></span><br><span class="line">	&#125;</span><br><span class="line">	write((ans+mod)%mod);<span class="built_in">putchar</span>(<span class="string">'\n'</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">signed</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	init();</span><br><span class="line">	<span class="keyword">long</span> <span class="keyword">long</span> N,K,L,R;</span><br><span class="line">	read(N);read(K);read(L);read(R);</span><br><span class="line">	solve(N,K,L,R);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/06/05/%E9%A2%98%E8%A7%A3-P3172-%E3%80%90-CQOI2015-%E9%80%89%E6%95%B0%E3%80%91/" data-id="ckb236lbf0000cvjx5dk2h83x" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%8E%AB%E6%AF%94%E4%B9%8C%E6%96%AF%E5%8F%8D%E6%BC%94/" rel="tag">莫比乌斯反演</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-题解-CF698C-【LRU】" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/06/04/%E9%A2%98%E8%A7%A3-CF698C-%E3%80%90LRU%E3%80%91/" class="article-date">
+  <time datetime="2020-06-04T14:06:00.000Z" itemprop="datePublished">2020-06-04</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E9%A2%98%E8%A7%A3/">题解</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/06/04/%E9%A2%98%E8%A7%A3-CF698C-%E3%80%90LRU%E3%80%91/">题解 CF698C 【LRU】</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><del>看到1e100的第一眼是懵逼的</del></p>
+<p>但我们稍加推理后发现，经过1e100次计算后，只有两种情况，</p>
+<ul>
+<li>队列未填满</li>
+<li>队列已满</li>
+</ul>
+<hr>
+<p>对于情况一<br>,很明显的是，如果概率大于0的物品件数 ≤ k ,队列就不可能被填满，概率大于0的物品一定会被选中，即</p>
+<script type="math/tex; mode=display">\sum_{i=1}^n sgn(p_i) \leq k</script><p>那么很显然物品i的概率为</p>
+<script type="math/tex; mode=display">sgn(p_i)</script><p>sgn()的的定义<a href="https://baike.so.com/doc/6702853-6916804.html" target="_blank" rel="noopener">戳</a></p>
+<hr>
+<p>情况二就要开始<del>乱搞</del>严谨dp了</p>
+<p>在1e100次操作后，某样物品的概率十分接近于此物品队列已满情况下概率，我们可以认为两数相等</p>
+<p>用集合A表示当前队列的状态,集合B表示未选的集合，那么很容易推出，选到x(x∈B)的概率为</p>
+<script type="math/tex; mode=display">\frac{p_x}{\sum_{i∈B}pi}</script><p>那么如果用f(A)表示A状态的概率，那么它对f(A∪{x})的贡献就为</p>
+<script type="math/tex; mode=display">f_A*\frac{p_x}{\sum_{i∈B}pi}</script><p>那么最终的答案就是</p>
+<script type="math/tex; mode=display">ans_i=\sum_{i∈A,|A|=k}f_A</script><p>然后我们只剩下了最后一个问题，如何在C++里表示集合</p>
+<p>由于这道题的n很小，完全可以用状压，用一个数来表示某个状态，然后就可以愉快的dp了<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> maxn=<span class="number">21</span>;</span><br><span class="line"><span class="keyword">int</span> n,k;</span><br><span class="line"><span class="keyword">long</span> <span class="keyword">double</span> p[maxn],f[<span class="number">1</span>&lt;&lt;maxn];</span><br><span class="line"><span class="keyword">long</span> <span class="keyword">double</span> ans[maxn];</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">f[x]表示 S状态的概率</span></span><br><span class="line"><span class="comment">x=Σ2^Si  状压</span></span><br><span class="line"><span class="comment">若a不在集合S中</span></span><br><span class="line"><span class="comment">f[x|(2^a)]= f[x]*(Pa/ΣPa)</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="comment">//#define debug 1</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dp</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line">	<span class="comment">//处理x状态</span></span><br><span class="line">	<span class="keyword">int</span> cnt=<span class="number">0</span>;</span><br><span class="line">	<span class="keyword">long</span> <span class="keyword">double</span> tot=<span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;i++)&#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> debug</span></span><br><span class="line">		<span class="built_in">cout</span>&lt;&lt;i&lt;&lt;<span class="string">" "</span>&lt;&lt;(x&amp;(<span class="number">1</span>&lt;&lt;(i<span class="number">-1</span>)))&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">		<span class="keyword">if</span>((x&amp;(<span class="number">1</span>&lt;&lt;(i<span class="number">-1</span>)))==<span class="number">0</span>)</span><br><span class="line">			tot+=p[i];</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			cnt++;</span><br><span class="line">	&#125;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> debug</span></span><br><span class="line">	<span class="built_in">cout</span>&lt;&lt;x&lt;&lt;<span class="string">" "</span>&lt;&lt;tot&lt;&lt;<span class="string">" "</span>&lt;&lt;cnt&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">	<span class="keyword">if</span>(cnt&gt;k)</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span>(cnt==k)</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;i++)&#123;</span><br><span class="line">			<span class="keyword">if</span>(x&amp;(<span class="number">1</span>&lt;&lt;(i<span class="number">-1</span>)))</span><br><span class="line">				ans[i]+=f[x];</span><br><span class="line">		&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;i++)</span><br><span class="line">			<span class="keyword">if</span>((x&amp;(<span class="number">1</span>&lt;&lt;(i<span class="number">-1</span>)))==<span class="number">0</span>)</span><br><span class="line">				f[x|(<span class="number">1</span>&lt;&lt;(i<span class="number">-1</span>))]+=f[x]*(p[i]/tot);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">signed</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	f[<span class="number">0</span>]=<span class="number">1</span>;<span class="keyword">int</span> __tmp__=<span class="number">0</span>;</span><br><span class="line">	<span class="built_in">cin</span>&gt;&gt;n&gt;&gt;k; </span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;i++)&#123;</span><br><span class="line">		<span class="built_in">cin</span>&gt;&gt;p[i];</span><br><span class="line">		<span class="keyword">if</span>(p[i]&gt;<span class="number">1e-8</span>)__tmp__++;</span><br><span class="line">		<span class="comment">//cout&lt;&lt;p[i]&lt;&lt;endl;</span></span><br><span class="line">	&#125; </span><br><span class="line">	<span class="keyword">if</span>(__tmp__&lt;=k)&#123;<span class="comment">//不可能填满 </span></span><br><span class="line">		<span class="comment">//printf ("No way to fill\n");</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;i++)&#123;</span><br><span class="line">			<span class="keyword">if</span>(p[i]&gt;<span class="number">1e-8</span>)</span><br><span class="line">				<span class="built_in">printf</span>(<span class="string">"1 "</span>);</span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">				<span class="built_in">printf</span>(<span class="string">"0 "</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//一定能填满</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;(<span class="number">1</span>&lt;&lt;n);i++)</span><br><span class="line">	 	dp(i);<span class="comment">//处理i状态</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;i++)</span><br><span class="line">		<span class="built_in">cout</span>&lt;&lt;ans[i]&lt;&lt;<span class="string">" "</span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/06/04/%E9%A2%98%E8%A7%A3-CF698C-%E3%80%90LRU%E3%80%91/" data-id="ckb0uscaq00015jjx5soi9hnw" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dp/" rel="tag">dp</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-题解-CF650D-【Zip-line】" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2020/06/04/%E9%A2%98%E8%A7%A3-CF650D-%E3%80%90Zip-line%E3%80%91/" class="article-date">
-  <time datetime="2020-06-04T14:04:26.000Z" itemprop="datePublished">2020-06-04</time>
+  <time datetime="2020-06-04T14:04:00.000Z" itemprop="datePublished">2020-06-04</time>
 </a>
     
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E9%A2%98%E8%A7%A3/">题解</a>
+  </div>
+
   </div>
   <div class="article-inner">
     
@@ -113,6 +276,8 @@
       <a data-url="http://yoursite.com/2020/06/04/%E9%A2%98%E8%A7%A3-CF650D-%E3%80%90Zip-line%E3%80%91/" data-id="ckb0up4tt00005jjxhly86cb0" class="article-share-link">Share</a>
       
       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84/" rel="tag">树状数组</a></li></ul>
+
     </footer>
   </div>
   
@@ -127,12 +292,33 @@
           <aside id="sidebar">
   
     
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A2%98%E8%A7%A3/">题解</a></li></ul>
+    </div>
+  </div>
+
 
   
     
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/dp/" rel="tag">dp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84/" rel="tag">树状数组</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%8E%AB%E6%AF%94%E4%B9%8C%E6%96%AF%E5%8F%8D%E6%BC%94/" rel="tag">莫比乌斯反演</a></li></ul>
+    </div>
+  </div>
+
 
   
     
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/dp/" style="font-size: 10px;">dp</a> <a href="/tags/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84/" style="font-size: 20px;">树状数组</a> <a href="/tags/%E8%8E%AB%E6%AF%94%E4%B9%8C%E6%96%AF%E5%8F%8D%E6%BC%94/" style="font-size: 20px;">莫比乌斯反演</a>
+    </div>
+  </div>
+
   
     
   <div class="widget-wrap">
@@ -149,6 +335,18 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2020/06/05/%E9%A2%98%E8%A7%A3-P3312-%E3%80%90-SDOI2014-%E6%95%B0%E8%A1%A8%E3%80%91/">题解 P3312 【[SDOI2014]数表】</a>
+          </li>
+        
+          <li>
+            <a href="/2020/06/05/%E9%A2%98%E8%A7%A3-P3172-%E3%80%90-CQOI2015-%E9%80%89%E6%95%B0%E3%80%91/">题解 P3172 【[CQOI2015]选数】</a>
+          </li>
+        
+          <li>
+            <a href="/2020/06/04/%E9%A2%98%E8%A7%A3-CF698C-%E3%80%90LRU%E3%80%91/">题解 CF698C 【LRU】</a>
+          </li>
         
           <li>
             <a href="/2020/06/04/%E9%A2%98%E8%A7%A3-CF650D-%E3%80%90Zip-line%E3%80%91/">题解 CF650D 【Zip-line】</a>
@@ -199,21 +397,5 @@
 
 
   </div>
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-        tex2jax: {
-            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
-            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
-            processEscapes: true
-        }
-    });
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax();
-        for (var i = 0; i < all.length; ++i)
-            all[i].SourceElement().parentNode.className += ' has-jax';
-    });
-</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-
 </body>
 </html>
