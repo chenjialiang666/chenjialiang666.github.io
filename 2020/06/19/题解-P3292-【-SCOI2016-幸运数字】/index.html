@@ -1,0 +1,218 @@
+
+<!DOCTYPE html>
+<html lang="zh-CH" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>题解 P3292 【[SCOI2016]幸运数字】 - CJL&#39;s Blog</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="Fechin,"> 
+    <meta name="description" content="题意给出一棵树，求树上两点间简单路径上的点的异或最大值
+题解一道线性基+倍增LCA的二合一板子题
+考虑到求异或的最大值肯定需要线性基，而线性基作为一种神奇的结构，它具有以下性质
+
+设线性基的异或集合,"> 
+    <meta name="author" content="admin"> 
+    <link rel="alternative" href="atom.xml" title="CJL&#39;s Blog" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">CJL&#39;s Blog</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://192.168.0.110:4000"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">题解 P3292 【[SCOI2016]幸运数字】</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">题解 P3292 【[SCOI2016]幸运数字】</h1>
+        <div class="stuff">
+            <span>六月 19, 2020</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/%E5%80%8D%E5%A2%9E/" rel="tag">倍增</a></li><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/%E7%BA%BF%E6%80%A7%E5%9F%BA/" rel="tag">线性基</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h3 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h3><p>给出一棵树，求树上两点间简单路径上的点的异或最大值</p>
+<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><p><strong>一道线性基+倍增LCA的二合一板子题</strong></p>
+<p>考虑到求异或的最大值肯定需要<strong>线性基</strong>，而线性基作为一种神奇的结构，它具有以下性质</p>
+<ul>
+<li><p>设线性基的异或集合中不存在0，即异或集合中每个元素的异或方案唯一</p>
+</li>
+<li><p>线性基二进制最高位互不相同。</p>
+</li>
+<li><p>线性基中元素互相异或，异或集合不变。</p>
+</li>
+</ul>
+<p>利用这些性质，我们可以用$O(log^2n)$的时间复杂度合并，合并就是把一个基中的所有值插进另一个基<del>众所周知，$\texttt{Oier}$是不需要证明的</del></p>
+<p>再来考虑倍增求LCA的操作，我们预处理出每个节点的$i$倍父亲，转移方程是长这样的：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">f[now][i]=f[f[now][i<span class="number">-1</span>]][i<span class="number">-1</span>]</span><br></pre></td></tr></table></figure><br>那我们也可以用这样的方法，求出$x$到它的$i$倍父亲（不包括）的线性基，在往上跳的时候把线性基合并一下就ok了</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">read</span><span class="params">(T &amp;x)</span></span>&#123;</span><br><span class="line">	x=<span class="number">0</span>;<span class="keyword">char</span> c=getchar();<span class="keyword">bool</span> f=<span class="literal">false</span>;</span><br><span class="line">	<span class="keyword">for</span>(;!<span class="built_in">isdigit</span>(c);c=getchar())f!=c==<span class="string">'-'</span>;</span><br><span class="line">	<span class="keyword">for</span>(;<span class="built_in">isdigit</span>(c);c=getchar())x=x*<span class="number">10</span>+c-<span class="string">'0'</span>;</span><br><span class="line">	<span class="keyword">if</span>(f)x=-x;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T ,<span class="keyword">typename</span> ...Arg&gt;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">read</span><span class="params">(T &amp;x,Arg &amp;...args)</span></span>&#123;</span><br><span class="line">	read(x);read(args...);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(T x)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(x&lt;<span class="number">0</span>)<span class="built_in">putchar</span>(<span class="string">'-'</span>),x=-x;</span><br><span class="line">	<span class="keyword">if</span>(x&gt;=<span class="number">10</span>)write(x/<span class="number">10</span>);</span><br><span class="line">	<span class="built_in">putchar</span>(x%<span class="number">10</span>+<span class="string">'0'</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</span><br><span class="line"><span class="keyword">const</span> ll maxn=<span class="number">20000</span>+<span class="number">100</span>;</span><br><span class="line"><span class="keyword">const</span> ll maxm=<span class="number">20000</span>+<span class="number">100</span>;</span><br><span class="line"><span class="keyword">bool</span> flag[maxn];</span><br><span class="line">ll dis[maxn];</span><br><span class="line"><span class="keyword">const</span> ll maxn_wei=<span class="number">61</span>;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">XXJ</span>&#123;</span></span><br><span class="line">	<span class="comment">//线性基板子</span></span><br><span class="line">	ll b[maxn_wei];</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span>&#123;<span class="built_in">memset</span>(b,<span class="number">0</span>,<span class="keyword">sizeof</span> b);&#125;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(ll x)</span></span>&#123;</span><br><span class="line">		<span class="keyword">for</span>(ll i=maxn_wei<span class="number">-1</span>;i&gt;=<span class="number">0</span>;i--)&#123;</span><br><span class="line">			<span class="keyword">if</span>(!(x&amp;(<span class="number">1l</span>l&lt;&lt;i)))<span class="keyword">continue</span>;</span><br><span class="line">			<span class="keyword">if</span>(!b[i])&#123;</span><br><span class="line">				b[i]=x;</span><br><span class="line">				<span class="keyword">return</span> ;</span><br><span class="line">			&#125;</span><br><span class="line">			x^=b[i];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	XXJ <span class="keyword">operator</span>+(<span class="keyword">const</span> XXJ b)<span class="keyword">const</span>&#123;</span><br><span class="line">		XXJ New=*<span class="keyword">this</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;maxn_wei;i++)</span><br><span class="line">			<span class="keyword">if</span>(b.b[i])</span><br><span class="line">				New.insert(b.b[i]);</span><br><span class="line">		<span class="keyword">return</span> New;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Graph</span>&#123;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">Edge</span>&#123;</span>ll v,nxt;&#125;e[maxm*<span class="number">2</span>];</span><br><span class="line">	ll cnt,head[maxn];</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span>&#123;<span class="built_in">memset</span>(head,<span class="number">0</span>,<span class="keyword">sizeof</span> head);cnt=<span class="number">0</span>;&#125;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">add</span><span class="params">(ll u,ll v)</span></span>&#123;e[++cnt]=(Edge)&#123;v,head[u]&#125;;head[u]=cnt;&#125;</span><br><span class="line">	<span class="meta">#<span class="meta-keyword">define</span> For(G,i) for(ll eee=(G).head[(i)];eee;eee=(G).e[eee].nxt)</span></span><br><span class="line">	<span class="meta">#<span class="meta-keyword">define</span> v(G) (G).e[eee].v</span></span><br><span class="line">&#125;G;</span><br><span class="line">ll n,m,u,v,w;</span><br><span class="line"><span class="keyword">int</span> f[maxn][<span class="number">15</span>];</span><br><span class="line">XXJ b[maxn][<span class="number">15</span>];</span><br><span class="line"><span class="keyword">int</span> lg[maxn];</span><br><span class="line"><span class="keyword">int</span> depth[maxn];</span><br><span class="line">ll g[maxn];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> now,<span class="keyword">int</span> fath)</span></span>&#123;</span><br><span class="line">	f[now][<span class="number">0</span>]=fath;depth[now]=depth[fath]+<span class="number">1</span>;</span><br><span class="line">	b[now][<span class="number">0</span>].init();b[now][<span class="number">0</span>].insert(g[now]);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=lg[depth[now]];++i)</span><br><span class="line">    	f[now][i]=f[f[now][i<span class="number">-1</span>]][i<span class="number">-1</span>],</span><br><span class="line">		b[now][i]=b[now][i<span class="number">-1</span>]+b[f[now][i<span class="number">-1</span>]][i<span class="number">-1</span>];</span><br><span class="line">	For(G,now)<span class="keyword">if</span>(v(G)!=fath)dfs(v(G),now);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">XXJ <span class="title">lca</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">	XXJ tmp;tmp.init();</span><br><span class="line">	<span class="keyword">if</span>(depth[x]&lt;depth[y])<span class="comment">//令x更深</span></span><br><span class="line">		swap(x,y);</span><br><span class="line">	<span class="keyword">while</span>(depth[x]&gt;depth[y])</span><br><span class="line">		tmp=tmp+b[x][lg[depth[x]-depth[y]]<span class="number">-1</span>],</span><br><span class="line">		x=f[x][lg[depth[x]-depth[y]]<span class="number">-1</span>];</span><br><span class="line">	<span class="keyword">if</span>(x==y)&#123;<span class="comment">//如果x是y的祖先，那他们的LCA肯定就是x了</span></span><br><span class="line">		tmp.insert(g[x]);</span><br><span class="line">		<span class="keyword">return</span> tmp;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> k=lg[depth[x]]<span class="number">-1</span>;k&gt;=<span class="number">0</span>;k--)<span class="comment">//向上跳</span></span><br><span class="line">		<span class="keyword">if</span>(f[x][k]!=f[y][k]) <span class="comment">//因为我们要跳到LCA的下面一层，所以它们肯定不相等</span></span><br><span class="line">	    	tmp=tmp+b[x][k]+b[y][k],x=f[x][k],y=f[y][k];</span><br><span class="line">	tmp.insert(g[f[x][<span class="number">0</span>]]);</span><br><span class="line">	tmp.insert(g[x]);</span><br><span class="line">	tmp.insert(g[y]);</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> tmp;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">signed</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	read(n,m);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;i++)</span><br><span class="line">		read(g[i]);</span><br><span class="line">	<span class="keyword">for</span>(ll i=<span class="number">1</span>;i&lt;n;i++)&#123;</span><br><span class="line">		read(u,v);</span><br><span class="line">		G.add(u,v);</span><br><span class="line">		G.add(v,u);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;++i)</span><br><span class="line">		lg[i]=lg[i<span class="number">-1</span>]+(<span class="number">1</span>&lt;&lt;lg[i<span class="number">-1</span>]==i);</span><br><span class="line">	dfs(<span class="number">1</span>,<span class="number">-1</span>);</span><br><span class="line">	<span class="keyword">while</span>(m--)&#123;</span><br><span class="line">		<span class="keyword">int</span> x,y;read(x,y);</span><br><span class="line">		XXJ get=lca(x,y);</span><br><span class="line">		ll ans=<span class="number">0</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=maxn_wei<span class="number">-1</span>;i&gt;=<span class="number">0</span>;i--)</span><br><span class="line">			ans=max(ans,ans^get.b[i]);</span><br><span class="line">		write(ans);<span class="built_in">putchar</span>(<span class="string">'\n'</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="/MathJax-2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({"HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"], linebreaks: { automatic:true }, EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50) },
+        tex2jax: { inlineMath: [ ["$", "$"], ["\\(","\\)"] ], processEscapes: true, ignoreClass: "tex2jax_ignore|dno",skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']},
+        TeX: {  noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } }, Macros: { href: "{}" } },
+        messageStyle: "none"
+    });
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+
+</html>

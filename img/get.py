@@ -1,5 +1,5 @@
 import os
-pos=0
+pos=int(input("Please input already get:"))+1
 last=0
 while True:
 	a=input()
